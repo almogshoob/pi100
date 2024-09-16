@@ -1,0 +1,126 @@
+.nav {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--bg-contrast);
+  border-bottom: solid 1px var(--border-color);
+
+  & > :first-child {
+    margin-right: auto;
+  }
+}
+
+.content {
+  max-width: 55ch;
+  min-width: 350px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.console {
+  padding-block: 2rem;
+  position: relative;
+  overflow-x: hidden;
+
+  &::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    box-shadow: inset 90px 0 50px -50px var(--bg-color);
+    pointer-events: none;
+  }
+}
+
+.digits {
+  --font-size: 2rem;
+  font-size: var(--font-size);
+  font-family: "Share Tech Mono", monospace;
+  translate: calc(-50% + 1ch);
+  margin-block: 2rem;
+  & > * {
+    opacity: 0.5;
+  }
+  & > :nth-last-child(1) {
+    font-size: calc(var(--font-size) * 2);
+    opacity: 1;
+  }
+  & > :nth-last-child(2) {
+    font-size: calc(var(--font-size) * 1.8);
+    opacity: 0.9;
+  }
+  & > :nth-last-child(3) {
+    font-size: calc(var(--font-size) * 1.6);
+    opacity: 0.8;
+  }
+  & > :nth-last-child(4) {
+    font-size: calc(var(--font-size) * 1.4);
+    opacity: 0.7;
+  }
+  & > :nth-last-child(5) {
+    font-size: calc(var(--font-size) * 1.2);
+    opacity: 0.6;
+  }
+
+  &[iswrong="true"] > :nth-last-child(1) {
+    color: red;
+  }
+}
+
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  font-size: 2rem;
+  font-family: "Share Tech Mono", monospace;
+  /* because of :after box-shadow */
+  z-index: 1;
+
+  & > :last-child {
+    grid-column: 2;
+  }
+
+  & > button {
+    padding: 0.5em 1em;
+    border-radius: 10px;
+    border: none;
+  }
+}
+
+.result {
+  margin-top: 2rem;
+}
+
+.restart-button {
+  margin-top: 1rem;
+  padding: 0.5em 1em;
+  border-radius: 10px;
+  border: none;
+}
+
+.three-dots {
+  position: relative;
+  &::after {
+    content: "";
+    animation: three-dots 3s infinite;
+    position: absolute;
+    left: calc(100% + 3px);
+  }
+}
+
+@keyframes three-dots {
+  0% {
+    content: "";
+  }
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75% {
+    content: "...";
+  }
+}
