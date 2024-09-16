@@ -43,7 +43,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="nav">
-        <a href="/pi-100" onClick={handleLogoClick} tabIndex={-1}>
+        <a href="/pi100" onClick={handleLogoClick} tabIndex={-1}>
           <h1>Pi 100</h1>
         </a>
         <button className="icon-button" onClick={toggleTheme}>
