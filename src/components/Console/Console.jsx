@@ -1,36 +1,47 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { PI } from "../../utils/utils";
+import { useDigitsStore } from "../../stores";
 
 const Console = () => {
-  const [digits, setDigits] = useState(["3", "."]);
+  const { digits, appendDigit, resetDigits, getDigitsLength } =
+    useDigitsStore();
   const [isWrong, setIsWrong] = useState(false);
-
-  // const isMobile = navigator.maxTouchPoints > 0;
+  const [isWin, setIsWin] = useState(false);
 
   const handleDigitClick = (digit) => {
-    setDigits((prev) => {
-      if (digit !== PI[prev.length]) setIsWrong(true);
-      return [...prev, digit.toString()];
-    });
+    const currentLength = getDigitsLength();
+    if (digit !== PI[currentLength]) setIsWrong(true);
+    else if (currentLength === 2 + 99) setIsWin(true);
+    appendDigit(digit);
   };
 
   const handleRestart = () => {
-    setDigits(["3", "."]);
+    resetDigits();
     setIsWrong(false);
   };
 
   useEffect(() => {
-    if (!isWrong) {
-      const handleKey = (event) => {
+    const handleKey = (event) => {
+      if (event.charCode >= 48 && event.charCode <= 57)
         handleDigitClick(event.key);
-      };
+    };
 
+    // init
+    if (!isWin && !isWrong) {
       document.documentElement.focus();
       document.addEventListener("keypress", handleKey);
-
       return () => document.removeEventListener("keypress", handleKey);
     }
-  }, [isWrong]);
+    if (isWrong) {
+      const bestScore = localStorage.getItem("best-score");
+      const currentScore = digits.length - 3;
+      if (!bestScore || currentScore > bestScore)
+        localStorage.setItem("best-score", currentScore);
+    }
+    if (isWin) {
+      localStorage.setItem("best-score", 100);
+    }
+  }, [isWrong, isWin]);
 
   return (
     <div className="console | column">
@@ -45,18 +56,34 @@ const Console = () => {
           <button
             key={digit}
             onClick={() => handleDigitClick(digit)}
-            disabled={isWrong}
+            disabled={isWrong || isWin}
           >
             {digit}
           </button>
         ))}
       </div>
-      {isWrong && (
+      {(isWin || isWrong) && (
         <>
           <p className="result">
-            You remembered {digits.length - 3} digits! 👏
+            {isWin ? (
+              <>
+                You remembered all 100 digit! <br /> 🎉😯👏
+              </>
+            ) : (
+              <>
+                You remembered {digits.length - 3} digits!
+                <br />
+                Best Score:{" "}
+                {Math.max(
+                  digits.length - 3,
+                  localStorage.getItem("best-score")
+                )}
+              </>
+            )}
           </p>
-          <button className="restart-button" onClick={handleRestart}>Try Again</button>
+          <button className="restart-button" onClick={handleRestart}>
+            Try Again
+          </button>
         </>
       )}
     </div>

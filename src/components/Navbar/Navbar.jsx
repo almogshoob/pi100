@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { DarkModeIcon, LightModeIcon } from "../../assets/icons";
+import { DarkModeIcon, HelpIcon, LightModeIcon } from "../../assets/icons";
+import { HelpModal } from "../HelpModal/HelpModal";
 
 const Navbar = () => {
   const isDevicePreferDark =
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches;
   const userThemePreference = localStorage.getItem("theme");
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(
     userThemePreference ? userThemePreference === "dark" : isDevicePreferDark
   );
@@ -49,7 +51,17 @@ const Navbar = () => {
         <button className="icon-button" onClick={toggleTheme}>
           {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
         </button>
+        <button
+          className="icon-button"
+          onClick={() => setIsHelpModalOpen(true)}
+        >
+          <HelpIcon />
+        </button>
       </nav>
+      <HelpModal
+        open={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
+      />
     </>
   );
 };
