@@ -7,10 +7,10 @@ const Navbar = () => {
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches;
   const userThemePreference = localStorage.getItem("theme");
-  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(
     userThemePreference ? userThemePreference === "dark" : isDevicePreferDark
   );
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
   const toggleTheme = () => {
     setIsDarkMode((prev) => {

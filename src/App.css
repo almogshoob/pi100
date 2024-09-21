@@ -96,7 +96,7 @@
     opacity: 0.6;
   }
 
-  &[iswrong="true"] > :nth-last-child(1) {
+  &[gamestate="fail"] > :nth-last-child(1) {
     color: red;
   }
 }

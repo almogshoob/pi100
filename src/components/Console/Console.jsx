@@ -1,23 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PI } from "../../utils/utils";
 import { useDigitsStore } from "../../stores";
 
 const Console = () => {
-  const { digits, appendDigit, resetDigits, getDigitsLength } =
-    useDigitsStore();
-  const [isWrong, setIsWrong] = useState(false);
-  const [isWin, setIsWin] = useState(false);
+  const {
+    digits,
+    appendDigit,
+    resetDigits,
+    getDigitsLength,
+    gameState,
+    setGameState,
+  } = useDigitsStore();
+  const isFinished = useMemo(
+    () => ["fail", "success"].includes(gameState),
+    [gameState]
+  );
 
   const handleDigitClick = (digit) => {
     const currentLength = getDigitsLength();
-    if (digit !== PI[currentLength]) setIsWrong(true);
-    else if (currentLength === 2 + 99) setIsWin(true);
+    if (digit !== PI[currentLength]) setGameState("fail");
+    else if (currentLength === 2 + 99) setGameState("success");
     appendDigit(digit);
   };
 
   const handleRestart = () => {
     resetDigits();
-    setIsWrong(false);
+    setGameState("playing");
   };
 
   useEffect(() => {
@@ -27,26 +35,24 @@ const Console = () => {
     };
 
     // init
-    if (!isWin && !isWrong) {
+    if (!isFinished) {
       document.documentElement.focus();
       document.addEventListener("keypress", handleKey);
       return () => document.removeEventListener("keypress", handleKey);
-    }
-    if (isWrong) {
+    } else if (gameState === "fail") {
       const bestScore = localStorage.getItem("best-score");
       const currentScore = digits.length - 3;
       if (!bestScore || currentScore > bestScore)
         localStorage.setItem("best-score", currentScore);
-    }
-    if (isWin) {
+    } else if (gameState === "success") {
       localStorage.setItem("best-score", 100);
     }
-  }, [isWrong, isWin]);
+  }, [gameState, isFinished]);
 
   return (
     <div className="console | column">
       <h2 className="three-dots">Enter next digit</h2>
-      <p className="digits" iswrong={isWrong.toString()}>
+      <p className="digits" gamestate={gameState}>
         {digits
           .map((digit, i) => <span key={i}>{digit}</span>)
           .splice(Math.max(digits.length - 20, 0))}
@@ -56,16 +62,16 @@ const Console = () => {
           <button
             key={digit}
             onClick={() => handleDigitClick(digit)}
-            disabled={isWrong || isWin}
+            disabled={["fail", "success"].includes(gameState)}
           >
             {digit}
           </button>
         ))}
       </div>
-      {(isWin || isWrong) && (
+      {isFinished && (
         <>
           <p className="result">
-            {isWin ? (
+            {gameState === "success" ? (
               <>
                 You remembered all 100 digit! <br /> 🎉😯👏
               </>

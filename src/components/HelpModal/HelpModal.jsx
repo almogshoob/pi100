@@ -4,12 +4,15 @@ import { PI } from "../../utils/utils";
 
 const HelpModal = ({ open, onClose }) => {
   const bestScore = parseInt(localStorage.getItem("best-score") || 0);
-  const { getDigitsLength } = useDigitsStore();
+  const { getDigitsLength, gameState } = useDigitsStore();
 
   return (
     <Modal open={open} onClose={onClose}>
       <div className="help-modal">
-        <p className="pi-helper" disabled={getDigitsLength() > 2}>
+        <p
+          className="pi-helper"
+          disabled={gameState === "playing" && getDigitsLength() > 2}
+        >
           <span>{PI.slice(2, 2 + bestScore)}</span>
           <span>{PI.slice(2 + bestScore)}</span>
         </p>
